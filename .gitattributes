@@ -1,0 +1,13 @@
+*      text=auto eof=lf
+*.asm  text diff=asm
+*.S    text diff=asm
+*.c    text diff=c
+*.h    text diff=c
+*.cpp  text diff=cpp
+
+*.obj  binary
+*.bin  binary
+*.out  binary
+*.a    binary
+*.img  binary
+
