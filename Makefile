@@ -23,13 +23,13 @@ OBJS=\
 	$(KERNEL_DIR)/.build/kernel.o  \
 	$(DRIVERS_DIR)/.build/screen.o
 
-# Default recipe 
+# Default recipe
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): compile_all $(KERNEL_BINARY)
 	@cat $(BOOTLOADER_BINARY) $(KERNEL_BINARY) 1> $@
 
-$(KERNEL_BINARY): $(LINK_SCRIPT)
+$(KERNEL_BINARY): $(LINK_SCRIPT) $(OBJS)
 # https://stackoverflow.com/questions/42301831/change-entry-point-with-gnu-linker
 # PS -> Use -M to see the table that the link generated ...
 	@$(LINKER) -o $@ --oformat binary -T$< -melf_i386 $(OBJS)
@@ -45,13 +45,13 @@ debug: $(EXECUTABLE)
 	@qemu-system-x86_64 -s -S -m 1024M -drive file=$<,format=raw,index=0,if=ide &
 	@gdb --quiet -ex "add-symbol-file $(KERNEL_DIR)/.build/kernel.o 0x100000" -ex "break kernel_main" -ex "target remote localhost:1234"
 
-compile_all:	
-	@make --silent --directory=$(BOOT_DIR) 
-	@make --silent --directory=$(KERNEL_DIR) 
+compile_all:
+	@make --silent --directory=$(BOOT_DIR)
+	@make --silent --directory=$(KERNEL_DIR)
 	@make --silent --directory=$(DRIVERS_DIR)
 
 clean:
-	@bash -c 'rm -Rf ${BUILD_DIR}/*.{img,bin}' 
+	@bash -c 'rm -Rf ${BUILD_DIR}/*.{img,bin}'
 	@make --silent --directory=$(BOOT_DIR) clean
-	@make --silent --directory=$(KERNEL_DIR) clean	
-	@make --silent --directory=$(DRIVERS_DIR) clean		
+	@make --silent --directory=$(KERNEL_DIR) clean
+	@make --silent --directory=$(DRIVERS_DIR) clean
