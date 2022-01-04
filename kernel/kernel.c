@@ -2,19 +2,15 @@
 
 char *KERNEL_LOADED    = "The RamboOS Kernel Developer successfully loaded into main memory!";
 
-/**
- * This is the memory address
- * that the vga buffer is loaded
- * http://www.osdever.net/FreeVGA/vga/vgamem.htm
- */
-#define VIDEO_MEMORY_ADDRESS_BASE  0xB8000
-
+#include "../drivers/screen.h"
 
 // Our bootloader will load the code, and give the execution
 // to this main
 void kernel_main(void) {
 
-    const int total_colors = 5;
+    clear_screen();
+
+    const int total_colors = 10;
 
     int colors[total_colors];
     colors[0] = 0x0F;
@@ -22,15 +18,14 @@ void kernel_main(void) {
     colors[2] = 0x0D;
     colors[3] = 0x0C;
     colors[4] = 0x0B;
+    colors[5] = 0x0A;
+    colors[6] = 0x09;
+    colors[7] = 0x08;
+    colors[8] = 0x07;
+    colors[9] = 0x06;
 
-    const int size = 67;
-    char *ptr = (char *) VIDEO_MEMORY_ADDRESS_BASE;    
-    int video_screen = 0;
-    for (int index = 0; index < size; index++) {
-        *(ptr+video_screen) = KERNEL_LOADED[index]; 
-        // https://www.fountainware.com/EXPL/vga_color_palettes.htm
-        *(ptr+video_screen+1) = colors[index % total_colors];
-        video_screen+=2;
+    for (int index = 0; index < total_colors; index++) {
+        print_at(KERNEL_LOADED, colors[index], index, 0);
     }
 
     // We can not return to the CPU.
