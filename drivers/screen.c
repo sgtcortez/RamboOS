@@ -16,11 +16,8 @@
     ((volatile unsigned char *)VIDEO_MEMORY_ADDRESS_BASE + BYTES_USED_PER_CELL * (row * VGA_WIDTH + column));
 
 void clear_screen(void) {
-    // Clears the screen
-    int cell = 0;
-
     volatile unsigned char *video_pointer = (volatile unsigned char *)VIDEO_MEMORY_ADDRESS_BASE;
-    for (int address = VIDEO_MEMORY_ADDRESS_BASE; address < VIDEO_MEMORY_ADDRESS_LIMIT; address++, cell += 2) {
+    for (int address = VIDEO_MEMORY_ADDRESS_BASE, cell = 0; address < VIDEO_MEMORY_ADDRESS_LIMIT; address++, cell += 2) {
         *(video_pointer + cell)     = ' ';
         *(video_pointer + cell + 1) = 0x00;
     }
